@@ -1,41 +1,56 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Logo } from "./Logo";
 import { cn } from "@/lib/utils";
 
 const NAV = [
+  { label: "Home", href: "/" },
   {
     label: "Photo Booths",
     href: "/photo-booths",
     children: [
-      { label: "Open Air", href: "/photo-booths/open" },
-      { label: "Glam", href: "/photo-booths/glam" },
-      { label: "Enclosed", href: "/photo-booths/enclosed" },
+      { label: "Open Booth", href: "/photo-booths/open" },
+      { label: "Glam Booth", href: "/photo-booths/glam" },
+      { label: "Enclosed Booth", href: "/photo-booths/enclosed" },
     ],
   },
   {
     label: "Events",
     href: "/events",
     children: [
+      { label: "Event Gallery", href: "/events/gallery" },
       { label: "Weddings", href: "/events/weddings" },
       { label: "Birthdays", href: "/events/birthdays" },
-      { label: "Corporate", href: "/events/corporate" },
-      { label: "School", href: "/events/school" },
+      { label: "School Events", href: "/events/school-events" },
+      { label: "Corporate Events", href: "/events/corporate-events" },
     ],
   },
   { label: "Packages", href: "/packages" },
   { label: "Backdrops", href: "/backdrops" },
-  { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/contact" },
+  { label: "Quick Quote", href: "/quote" },
+  { label: "Booking", href: "/book" },
+  {
+    label: "Other",
+    href: "/contact",
+    children: [
+      { label: "Contact Us", href: "/contact" },
+      { label: "Photography", href: "/photography" },
+      { label: "Pay Invoice", href: "/pay-invoice" },
+      { label: "FAQ", href: "/faq" },
+      { label: "Privacy Policy", href: "/privacy-policy" },
+      { label: "Blogs", href: "/blog" },
+    ],
+  },
 ];
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -63,9 +78,18 @@ export function Nav() {
         )}
       >
         <div className="container-luxe flex h-20 items-center justify-between">
-          <Logo />
+          <Link href="/" aria-label="N2N Photobooths home" className="group inline-flex items-center gap-0.5">
+            <Image
+              src="/N2N Logo.png"
+              alt="N2N Photobooths"
+              width={120}
+              height={40}
+              priority
+              style={{ objectFit: "contain" }}
+            />
+          </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex" onMouseLeave={() => setHovered(null)}>
+          <nav className="hidden items-center gap-6 lg:flex" onMouseLeave={() => setHovered(null)}>
             {NAV.map((item) => (
               <div
                 key={item.href}
@@ -121,7 +145,10 @@ export function Nav() {
           </div>
 
           <button
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              setOpen((v) => !v);
+              setExpanded(null);
+            }}
             className="lg:hidden flex h-10 w-10 flex-col items-center justify-center gap-1.5"
             aria-label="Toggle menu"
             aria-expanded={open}
@@ -153,15 +180,25 @@ export function Nav() {
               <nav className="flex flex-col gap-4 pb-12">
                 {NAV.map((item) => (
                   <div key={item.href} className="border-b border-white/8 pb-4">
-                    <Link
-                      href={item.href}
-                      onClick={() => setOpen(false)}
-                      className="text-3xl font-bold text-white"
-                    >
-                      {item.label}
-                    </Link>
+                    {item.children ? (
+                      <button
+                        type="button"
+                        onClick={() => setExpanded((current) => current === item.label ? null : item.label)}
+                        className="text-3xl font-bold text-white"
+                      >
+                        {item.label}
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={() => setOpen(false)}
+                        className="text-3xl font-bold text-white"
+                      >
+                        {item.label}
+                      </Link>
+                    )}
                     {item.children && (
-                      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 pl-1">
+                      <div className={cn("mt-2 flex-col gap-y-1 pl-6", expanded === item.label ? "flex" : "hidden")}>
                         {item.children.map((c) => (
                           <Link
                             key={c.href}
@@ -177,10 +214,18 @@ export function Nav() {
                   </div>
                 ))}
                 <div className="mt-6 flex gap-3">
-                  <Link href="/quote" onClick={() => setOpen(false)} className="btn-ghost flex-1">
+                  <Link
+                    href="/quote"
+                    onClick={() => setOpen(false)}
+                    className="btn-ghost flex-1"
+                  >
                     Get a Quote
                   </Link>
-                  <Link href="/book" onClick={() => setOpen(false)} className="btn-primary flex-1">
+                  <Link
+                    href="/book"
+                    onClick={() => setOpen(false)}
+                    className="btn-primary flex-1"
+                  >
                     Book Now
                   </Link>
                 </div>

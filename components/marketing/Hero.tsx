@@ -24,7 +24,7 @@ export function Hero({ rating, reviewCount }: { rating?: number; reviewCount?: n
       {/* Background image with parallax */}
       <motion.div style={{ y, scale }} className="absolute inset-0">
         <Image
-          src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=2400&q=80"
+          src="/Photobooth Hire Melbourne.jpg"
           alt="Photo booth event"
           fill
           priority

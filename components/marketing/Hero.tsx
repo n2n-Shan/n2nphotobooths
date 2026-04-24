@@ -8,7 +8,7 @@ import { SplitWords } from "@/components/motion/SplitWords";
 
 const STARS = Array(5).fill(null);
 
-export function Hero({ rating, reviewCount }: { rating?: number; reviewCount?: number }) {
+export function Hero({ rating }: { rating?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -55,7 +55,7 @@ export function Hero({ rating, reviewCount }: { rating?: number; reviewCount?: n
             ))}
           </div>
           <span className="text-sm font-semibold text-white">
-            {rating ?? 5.0} · {reviewCount ? `${reviewCount}+` : "200+"} Google Reviews
+            {rating ?? 5.0} · 60+ Google Reviews
           </span>
         </motion.div>
 
@@ -66,7 +66,7 @@ export function Hero({ rating, reviewCount }: { rating?: number; reviewCount?: n
           transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="eyebrow mb-5"
         >
-          Melbourne · Since 2014
+          Melbourne VIC only
         </motion.p>
 
         {/* Headline */}

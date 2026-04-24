@@ -1,0 +1,126 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum EventType {
+  WEDDING
+  BIRTHDAY
+  CORPORATE
+  SCHOOL
+  OTHER
+}
+
+enum BoothGroup {
+  OPEN_ENCLOSED
+  GLAM
+}
+
+model Booking {
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  status         BookingStatus @default(PENDING)
+  eventDate      DateTime
+  eventStartTime String?
+  hours          Int
+  eventType      EventType
+  boothId        String
+  booth          Booth         @relation(fields: [boothId], references: [id])
+  packageId      String
+  package        Package       @relation(fields: [packageId], references: [id])
+  backdropId     String?
+  backdrop       Backdrop?     @relation(fields: [backdropId], references: [id])
+  addons         Json          @default("[]")
+  venueName      String?
+  venueAddress   String?
+  venuePostcode  String?
+  guestCount     Int?
+  customerName   String
+  customerEmail  String
+  customerPhone  String
+  notes          String?
+  estimatedTotal Decimal       @db.Decimal(10, 2)
+  deliveryFee    Decimal       @db.Decimal(10, 2)
+
+  @@index([eventDate])
+  @@index([status])
+}
+
+model Quote {
+  id            String     @id @default(cuid())
+  createdAt     DateTime   @default(now())
+  eventDate     DateTime?
+  eventType     EventType?
+  hours         Int?
+  customerName  String
+  customerEmail String
+  customerPhone String
+  message       String?
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  name      String
+  email     String
+  phone     String?
+  message   String
+}
+
+model Booth {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  tagline     String
+  description String
+  heroImage   String
+  gear        Json
+  sortOrder   Int       @default(0)
+  bookings    Booking[]
+}
+
+model Package {
+  id         String     @id @default(cuid())
+  boothGroup BoothGroup
+  hours      Int
+  price      Decimal    @db.Decimal(10, 2)
+  inclusions Json
+  isPopular  Boolean    @default(false)
+  sortOrder  Int        @default(0)
+  bookings   Booking[]
+}
+
+model Backdrop {
+  id        String    @id @default(cuid())
+  slug      String    @unique
+  name      String
+  mood      String
+  imageUrl  String
+  sortOrder Int       @default(0)
+  bookings  Booking[]
+}
+
+model GalleryItem {
+  id        String    @id @default(cuid())
+  imageUrl  String
+  eventType EventType
+  alt       String
+  sortOrder Int       @default(0)
+}
+
+model Admin {
+  id    String @id @default(cuid())
+  email String @unique
+}

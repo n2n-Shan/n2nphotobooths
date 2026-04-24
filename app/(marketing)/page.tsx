@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero rating={googleMeta?.rating} reviewCount={googleMeta?.total} />
+      <Hero rating={googleMeta?.rating} />
       <Manifesto reviewCount={googleMeta?.total} />
       <BoothShowcase booths={booths} />
       <TrustStrip />
